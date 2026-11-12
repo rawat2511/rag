@@ -91,7 +91,7 @@ select option { background: #14161f; }
 details.pop { position: relative; }
 details.pop summary { list-style: none; }
 details.pop summary::-webkit-details-marker { display: none; }
-.pop-body { position: absolute; left: 0; top: calc(100% + 8px); z-index: 5; width: 300px; padding: 16px; border: 1px solid var(--line-strong); border-radius: 16px; background: rgba(16, 18, 26, 0.94); backdrop-filter: blur(18px); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6); }
+.pop-body { position: absolute; left: 0; top: calc(100% + 8px); z-index: 5; width: 300px; padding: 16px; border: 1px solid var(--line-strong); border-radius: 16px; background: #10121a; text-shadow: none; backdrop-filter: blur(18px); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6); }
 details.pop.up .pop-body { top: auto; bottom: calc(100% + 8px); }
 .settings { display: grid; gap: 14px; }
 .settings label { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 10px; font-size: 14.5px; color: var(--soft); }
@@ -268,6 +268,9 @@ mark { padding: 0 2px; border-radius: 3px; background: rgba(255, 171, 61, 0.2); 
   .scene { position: relative; inset: auto; height: 46vh; min-height: 300px; order: 2; }
   .stage:not(.has-doc) .scene { position: absolute; inset: 0; height: auto; opacity: 0.45; }
   .hero { position: relative; left: auto; top: auto; transform: none; width: auto; padding: 36px 16px 44px; }
+  .hero-actions { position: relative; flex-wrap: wrap; }
+  .hero-actions details.pop { position: static; }
+  .hero-actions .pop-body { width: min(300px, 100%); }
   .hud { position: static; padding: 0 16px; max-width: none; width: auto; }
   .hud-tl { order: 1; padding-top: 20px; }
   .hud-tr { order: 3; justify-items: start; margin-top: 4px; }

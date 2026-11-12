@@ -405,7 +405,7 @@ export default function App() {
                 </label>
                 <div className="hero-actions">
                   <button className="btn primary" onClick={() => void loadSample()}>Try the sample document</button>
-                  <details className="pop">
+                  <details className="pop up">
                     <summary className="btn ghost">Chunking settings</summary>
                     <div className="pop-body">{settings}</div>
                   </details>
