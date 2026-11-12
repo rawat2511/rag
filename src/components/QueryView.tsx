@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ANSWER_MODEL, RERANK_MODEL } from '../config';
-import { streamAnswer } from '../lib/llm';
+import { RERANK_MODEL } from '../config';
+import { PROVIDERS, streamAnswer, type ProviderId } from '../lib/llm';
 import type { Chunk, QueryRun } from '../lib/types';
 import { VectorStrip } from './canvases';
 
@@ -192,29 +192,57 @@ export function QueryView({ chunks, run, hover, onHover }: Props) {
 
 /* ───────────────────────── Generation ───────────────────────── */
 
-const KEY_STORE = 'raglens.anthropicKey';
+const read = (k: string) => {
+  try { return sessionStorage.getItem(k) ?? ''; } catch { return ''; }
+};
+const write = (k: string, v: string) => {
+  try { sessionStorage.setItem(k, v); } catch { /* storage unavailable */ }
+};
+const keyStore = (id: ProviderId) => `raglens.key.${id}`;
+const modelStore = (id: ProviderId) => `raglens.model.${id}`;
+const fromStore = (store: (id: ProviderId) => string) =>
+  Object.fromEntries(PROVIDERS.map((p) => [p.id, read(store(p.id))])) as Record<ProviderId, string>;
 
 function AnswerPanel({ run, chunks, hover, onHover }: { run: QueryRun; chunks: Chunk[]; hover: number | null; onHover: (id: number | null) => void }) {
-  const [apiKey, setApiKey] = useState(() => {
-    try { return sessionStorage.getItem(KEY_STORE) ?? ''; } catch { return ''; }
+  const [providerId, setProviderId] = useState<ProviderId>(() => {
+    const saved = read('raglens.provider');
+    return PROVIDERS.some((p) => p.id === saved) ? (saved as ProviderId) : 'claude';
   });
+  // One key and one model name per provider, so switching never loses what was typed.
+  const [keys, setKeys] = useState(() => fromStore(keyStore));
+  const [models, setModels] = useState(() => fromStore(modelStore));
   const [answer, setAnswer] = useState('');
+  const [answeredBy, setAnsweredBy] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const abortRef = useRef<AbortController | null>(null);
   useEffect(() => () => abortRef.current?.abort(), []);
 
+  const provider = PROVIDERS.find((p) => p.id === providerId)!;
+  const apiKey = keys[providerId];
+  const model = models[providerId].trim() || provider.model;
+
+  const pick = (id: ProviderId) => {
+    setProviderId(id);
+    setError('');
+    write('raglens.provider', id);
+  };
+
   const generate = async () => {
     const key = apiKey.trim();
-    if (!key) return;
-    try { sessionStorage.setItem(KEY_STORE, key); } catch { /* storage unavailable */ }
+    if (!key || busy) return;
+    write(keyStore(providerId), key);
+    write(modelStore(providerId), models[providerId].trim());
     abortRef.current?.abort();
     const controller = (abortRef.current = new AbortController());
     setAnswer('');
     setError('');
+    setAnsweredBy(`${provider.label} · ${model}`);
     setBusy(true);
     try {
       await streamAnswer(
+        provider,
+        model,
         key,
         run.query,
         run.final.map((id, i) => ({ index: i + 1, pages: pagesOf(chunks[id]).slice(2), text: chunks[id].text })),
@@ -257,22 +285,40 @@ function AnswerPanel({ run, chunks, hover, onHover }: { run: QueryRun; chunks: C
       <div className="generate">
         <h4>Generate a grounded answer <small>optional</small></h4>
         <p className="hint">
-          Everything above ran in your browser with no API key. To also see the generation step, paste an Anthropic
-          API key. It is sent only from this tab to api.anthropic.com and is forgotten when the tab closes.
+          Everything above ran in your browser with no API key. To also see the generation step, pick a model
+          provider and paste your own key for it.
         </p>
+        <div className="seg providers" role="tablist" aria-label="Model provider">
+          {PROVIDERS.map((p) => (
+            <button key={p.id} role="tab" aria-selected={p.id === providerId} disabled={busy}
+              className={p.id === providerId ? 'on' : ''} onClick={() => pick(p.id)}>
+              {p.label}{keys[p.id].trim() && <i className="has-key" title="Key entered" />}
+            </button>
+          ))}
+        </div>
+        <label className="field">
+          <span>Model</span>
+          <input type="text" spellCheck={false} placeholder={provider.model} value={models[providerId]} autoComplete="off"
+            onChange={(e) => setModels((m) => ({ ...m, [providerId]: e.target.value }))} />
+        </label>
         <div className="key-row">
-          <input type="password" placeholder="sk-ant-…" value={apiKey} autoComplete="off"
-            onChange={(e) => setApiKey(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && generate()} />
+          <input type="password" aria-label={`${provider.vendor} API key`} placeholder={`${provider.vendor} API key (${provider.keyHint})`}
+            value={apiKey} autoComplete="off"
+            onChange={(e) => setKeys((k) => ({ ...k, [providerId]: e.target.value }))}
+            onKeyDown={(e) => e.key === 'Enter' && generate()} />
           <button className="btn primary" onClick={generate} disabled={!apiKey.trim() || busy}>
             {busy ? 'Generating…' : 'Generate answer'}
           </button>
         </div>
+        <p className="key-note">
+          The key is sent only from this tab to {provider.host} and is forgotten when the tab closes.
+        </p>
         {error && <p className="error-text">{error}</p>}
         {(answer || busy) && (
           <div className="answer-text">
             {rendered}
             {busy && <span className="caret" />}
-            <div className="answer-foot">{ANSWER_MODEL} · citations refer to the numbered chunks above</div>
+            <div className="answer-foot">{answeredBy} · citations refer to the numbered chunks above</div>
           </div>
         )}
       </div>
