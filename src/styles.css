@@ -79,7 +79,7 @@ h1 em { font-style: normal; background: linear-gradient(100deg, #6fe0ea 0%, #9a8
 .btn.ghost { background: transparent; border-color: var(--line); color: var(--soft); }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .link { background: none; border: 0; padding: 0; color: var(--dense); font: inherit; font-size: 13.5px; cursor: pointer; }
-select, input[type='password'] { font: inherit; font-size: 14.5px; color: var(--ink); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); border-radius: 9px; padding: 7px 10px; }
+select, input[type='password'], input[type='text'] { font: inherit; font-size: 14.5px; color: var(--ink); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); border-radius: 9px; padding: 7px 10px; }
 select option { background: #14161f; }
 :focus-visible { outline: 2px solid #8f9dff; outline-offset: 2px; }
 
@@ -228,7 +228,13 @@ mark { padding: 0 2px; border-radius: 3px; background: rgba(255, 171, 61, 0.2); 
 .generate { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 20px; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: var(--raise); }
 .generate h4 { --tone: var(--ink); }
 .generate .hint { margin: 0; }
-.key-row { display: flex; gap: 8px; margin-top: 16px; }
+.providers { display: flex; flex-wrap: wrap; margin-top: 16px; border-radius: 22px; backdrop-filter: none; background: transparent; }
+.providers button { flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 12px; white-space: nowrap; }
+.has-key { width: 6px; height: 6px; border-radius: 50%; background: var(--final, #7ee0a1); }
+.field { display: flex; align-items: center; gap: 12px; margin-top: 12px; font-size: 14px; color: var(--muted); }
+.field input { flex: 1; min-width: 0; padding: 10px 14px; border-radius: 999px; }
+.key-note { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
+.key-row { display: flex; gap: 8px; margin-top: 10px; }
 .key-row input { flex: 1; min-width: 0; padding: 10px 14px; border-radius: 999px; }
 .error-text { margin: 10px 0 0; color: var(--danger); font-size: 14.5px; }
 .answer-text { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); white-space: pre-wrap; font-size: 16.5px; line-height: 1.7; }

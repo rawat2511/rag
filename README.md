@@ -41,7 +41,7 @@ flowchart LR
   H --> I
   I --> J[Cross-encoder re-ranker]
   J --> K[Top-N context]
-  K --> L[Claude<br/>answer with citations]
+  K --> L[Claude / ChatGPT / Gemini / DeepSeek<br/>answer with citations]
 ```
 
 - **Embeddings:** `all-MiniLM-L6-v2` through Transformers.js (ONNX Runtime Web), in a Web Worker so the UI keeps animating. Uses WebGPU for large documents when available, multi-threaded WebAssembly otherwise.
@@ -49,11 +49,11 @@ flowchart LR
 - **Vector search, RRF and PCA:** implemented from scratch in [src/lib/vector.ts](src/lib/vector.ts).
 - **3D stage:** three.js in [src/components/Scene3D.tsx](src/components/Scene3D.tsx). One instanced mesh draws every chunk, so 1,500+ blocks animate at 60 fps; rendering is throttled while the embedding model runs and paused when off screen.
 - **Re-ranking:** `ms-marco-MiniLM-L-6-v2` cross-encoder, also in the worker.
-- **Generation:** optional. The visitor pastes their own Anthropic API key, which is sent only from their browser to the Anthropic API and kept in `sessionStorage` for the tab's lifetime.
+- **Generation:** optional, with a choice of four providers: Claude (Anthropic), ChatGPT (OpenAI), Gemini (Google) and DeepSeek. The visitor pastes their own API key for the provider they pick and can change the model name. The key is sent only from their browser to that provider's API and kept in `sessionStorage` for the tab's lifetime. See [src/lib/llm.ts](src/lib/llm.ts).
 
 ## Tech stack
 
-React 19, TypeScript, Vite, three.js (WebGL), Transformers.js, ONNX Runtime Web (WebGPU / WASM), pdf.js, Canvas 2D, Anthropic SDK.
+React 19, TypeScript, Vite, three.js (WebGL), Transformers.js, ONNX Runtime Web (WebGPU / WASM), pdf.js, Canvas 2D, Anthropic SDK, and the OpenAI, Gemini and DeepSeek streaming REST APIs.
 
 ## Run locally
 
