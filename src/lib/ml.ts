@@ -81,11 +81,17 @@ class MLClient {
 
 export const ml = new MLClient();
 
-export async function hasWebGPU(): Promise<boolean> {
+/**
+ * WebGPU support, and whether it is likely to beat multi-threaded WASM for embedding.
+ * Integrated GPUs are also busy drawing the 3D scene, so they are no faster than the CPU path.
+ */
+export async function detectWebGPU(): Promise<{ available: boolean; fast: boolean }> {
   try {
-    const gpu = (navigator as any).gpu;
-    return !!gpu && !!(await gpu.requestAdapter());
+    const adapter = await (navigator as any).gpu?.requestAdapter();
+    if (!adapter) return { available: false, fast: false };
+    const vendor = String(adapter.info?.vendor ?? '').toLowerCase();
+    return { available: true, fast: /nvidia|amd|apple/.test(vendor) };
   } catch {
-    return false;
+    return { available: false, fast: false };
   }
 }
