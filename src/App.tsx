@@ -326,6 +326,7 @@ export default function App() {
     <input type="file" accept=".pdf,.txt,.md,.markdown,application/pdf,text/plain"
       onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void loadFile(f); }} />
   );
+  const [showSettings, setShowSettings] = useState(false);
   const settings = (
     <div className="settings">
       <label>Chunk size <b>{cfg.size} words</b>
@@ -405,11 +406,12 @@ export default function App() {
                 </label>
                 <div className="hero-actions">
                   <button className="btn primary" onClick={() => void loadSample()}>Try the sample document</button>
-                  <details className="pop up">
-                    <summary className="btn ghost">Chunking settings</summary>
-                    <div className="pop-body">{settings}</div>
-                  </details>
+                  <button className={`btn ghost${showSettings ? ' on' : ''}`} aria-expanded={showSettings}
+                    aria-controls="hero-settings" onClick={() => setShowSettings((v) => !v)}>
+                    Chunking settings
+                  </button>
                 </div>
+                {showSettings && <div id="hero-settings" className="settings-panel fade">{settings}</div>}
               </>
             )}
           </div>
