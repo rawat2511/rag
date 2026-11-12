@@ -55,7 +55,7 @@ export interface QueryRun {
   useRerank: boolean;
   terms: QueryTerm[];
   qvec?: Float32Array;
-  qxy?: [number, number];
+  qpos?: [number, number, number];
   dense: Hit[];
   sparse: SparseHit[];
   fused: FusedHit[];

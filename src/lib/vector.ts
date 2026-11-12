@@ -36,19 +36,21 @@ export function rrf(dense: Hit[], sparse: Hit[], k = 60): FusedHit[] {
 
 export interface Projection {
   mean: Float32Array;
-  axes: [Float32Array, Float32Array];
-  /** x,y pairs for every chunk. */
+  axes: Float32Array[];
+  /** x,y,z triples for every chunk. */
   coords: Float32Array;
 }
 
-/** Project embeddings to 2D with PCA (top two principal components via power iteration). */
-export function pca2d(emb: Float32Array, n: number, dim: number): Projection {
+const COMPONENTS = 3;
+
+/** Project embeddings to 3D with PCA (top principal components via power iteration). */
+export function pca3d(emb: Float32Array, n: number, dim: number): Projection {
   const mean = new Float32Array(dim);
   for (let i = 0; i < n; i++) for (let d = 0; d < dim; d++) mean[d] += emb[i * dim + d];
   for (let d = 0; d < dim; d++) mean[d] /= Math.max(1, n);
 
   const axes: Float32Array[] = [];
-  for (let c = 0; c < 2; c++) {
+  for (let c = 0; c < COMPONENTS; c++) {
     let v = new Float32Array(dim);
     for (let d = 0; d < dim; d++) v[d] = Math.sin((d + 1) * (c + 1) * 12.9898) + 0.01;
     for (let iter = 0; iter < 40; iter++) {
@@ -83,22 +85,16 @@ export function pca2d(emb: Float32Array, n: number, dim: number): Projection {
     axes.push(v);
   }
 
-  const proj: Projection = { mean, axes: [axes[0], axes[1]], coords: new Float32Array(n * 2) };
-  for (let i = 0; i < n; i++) {
-    const [x, y] = project(proj, emb.subarray(i * dim, (i + 1) * dim));
-    proj.coords[i * 2] = x;
-    proj.coords[i * 2 + 1] = y;
-  }
+  const proj: Projection = { mean, axes, coords: new Float32Array(n * COMPONENTS) };
+  for (let i = 0; i < n; i++) proj.coords.set(project(proj, emb.subarray(i * dim, (i + 1) * dim)), i * COMPONENTS);
   return proj;
 }
 
-export function project(p: Projection, v: Float32Array): [number, number] {
-  let x = 0;
-  let y = 0;
+export function project(p: Projection, v: Float32Array): [number, number, number] {
+  const out: [number, number, number] = [0, 0, 0];
   for (let d = 0; d < v.length; d++) {
     const c = v[d] - p.mean[d];
-    x += c * p.axes[0][d];
-    y += c * p.axes[1][d];
+    for (let a = 0; a < COMPONENTS; a++) out[a] += c * p.axes[a][d];
   }
-  return [x, y];
+  return out;
 }
