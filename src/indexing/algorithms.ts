@@ -8,23 +8,27 @@ export interface FrameCtx { camera: THREE.Camera; now: number }
 export interface Built { group: THREE.Group; update(t: number, ctx: FrameCtx): string }
 export interface Rating { speed: number; recall: number; memory: number; build: number }
 
-export interface AlgoDef {
+/** Anything the 3D stage can play: a timeline of steps plus a scene built against it. */
+export interface SceneDef {
   id: string;
-  name: string;
-  full: string;
-  family: string;
-  tagline: string;
   steps: Step[];
   camera: [number, number, number];
   target?: [number, number, number];
   spin?: boolean;
+  build(T: number[]): Built;
+}
+
+export interface AlgoDef extends SceneDef {
+  name: string;
+  full: string;
+  family: string;
+  tagline: string;
   rating: Rating;
   complexity: string;
   params: string[];
   usedIn: string;
   bestFor: string;
   watchOut: string;
-  build(T: number[]): Built;
 }
 
 const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);

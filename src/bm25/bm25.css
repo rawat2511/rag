@@ -1,0 +1,56 @@
+/* ══════════════ BM25 page (builds on indexing.css) ══════════════ */
+.bm-picker { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+.bm-formula { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 4px 0 16px; padding: 18px 16px; border: 1px solid var(--line); border-radius: 14px; background: rgba(0, 0, 0, 0.35); font: 500 15px/1.3 var(--sans); color: var(--muted); }
+.bm-formula > span, .bm-formula span span { transition: color 0.3s, background 0.3s, box-shadow 0.3s; border-radius: 6px; }
+.bm-lhs { color: var(--soft); }
+.p-sum { font-size: 22px; }
+.p-sum sub { font-size: 11px; }
+.bm-frac { display: inline-flex; flex-direction: column; align-items: center; text-align: center; padding: 2px 4px; }
+.bm-frac > span { padding: 3px 4px; white-space: nowrap; }
+.bm-frac > span + span { border-top: 1px solid currentColor; }
+.bm-formula .p-count, .bm-formula .p-len, .bm-formula .p-idf, .bm-formula .p-sum { padding: 1px 4px; }
+.bm-formula[data-part='count'] .p-count,
+.bm-formula[data-part='sum'] .p-sum,
+.bm-formula[data-part='idf'] .p-idf,
+.bm-formula[data-part='tf'] .p-tf,
+.bm-formula[data-part='len'] .p-len { color: #1c1500; background: var(--final); box-shadow: 0 0 18px rgba(255, 217, 94, 0.45); }
+.bm-formula[data-part='tf'] .p-tf { background: rgba(255, 217, 94, 0.14); color: var(--final); }
+.bm-formula[data-part='all'] { color: var(--final); border-color: rgba(255, 217, 94, 0.45); }
+.bm-insight { margin: 0 0 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.6; color: var(--soft); }
+.bm-glossary div { grid-template-columns: 110px 1fr; }
+.bm-glossary dt { text-transform: none; letter-spacing: 0; font-size: 13.5px; color: var(--ink); }
+
+.bm-play { margin-top: 72px; padding-top: 36px; border-top: 1px solid var(--line); }
+.bm-play h3, .bm-corpus h3:not(.col-title) { margin: 0 0 8px; font: 600 26px/1.2 var(--serif); letter-spacing: -0.02em; }
+.bm-play .ix-note { margin: 0 0 22px; }
+.bm-play code { font-size: 0.92em; color: var(--soft); }
+.bm-controls { display: grid; gap: 14px; }
+.bm-controls .ask { margin: 0; max-width: 720px; }
+.bm-controls .suggestions { justify-content: flex-start; margin: 0; }
+.bm-knobs { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); align-items: end; gap: 14px 28px; max-width: 860px; }
+.bm-knobs .btn { justify-self: start; }
+.bm-terms { margin: 22px 0 18px; }
+.bm-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.bm-hit { padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--raise); animation: rise 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.bm-hit:first-child { border-color: rgba(255, 217, 94, 0.5); }
+.bm-hit.miss { opacity: 0.45; }
+.bm-hit-head { display: flex; align-items: baseline; gap: 10px; }
+.bm-hit-head .rank { --tone: var(--final); }
+.bm-stack { display: flex; height: 6px; margin: 10px 0 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+.bm-stack i { display: block; height: 100%; transition: width 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.bm-contrib { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.bm-hit .snippet { -webkit-line-clamp: 4; font-size: 14.5px; }
+
+.bm-corpus { margin-top: 56px; }
+.bm-corpus ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 8px 28px; margin: 0; padding: 0; list-style: none; }
+.bm-corpus li { display: grid; grid-template-columns: 34px 1fr; gap: 10px; font-size: 14.5px; line-height: 1.55; color: var(--soft); }
+.bm-corpus li b { font: 500 13.5px var(--mono); color: var(--muted); padding-top: 1px; }
+
+@media (max-width: 1100px) {
+  .bm-picker { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .bm-results, .bm-corpus ol { grid-template-columns: 1fr; }
+  .bm-glossary div { grid-template-columns: 1fr; }
+}

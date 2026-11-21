@@ -361,6 +361,7 @@ export default function App() {
         </ol>
         <div className="top-links">
           <a className="btn ghost" href="#/indexing">Indexing algorithms</a>
+          <a className="btn ghost" href="#/bm25">BM25</a>
           {REPO_URL && <a className="btn ghost" href={REPO_URL} target="_blank" rel="noreferrer">Source ↗</a>}
         </div>
       </nav>

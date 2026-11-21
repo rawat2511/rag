@@ -5,7 +5,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import type { AlgoDef, Built } from './algorithms';
+import type { Built, SceneDef } from './algorithms';
 import { disposeTree } from './kit';
 
 export interface SceneApi {
@@ -14,7 +14,7 @@ export interface SceneApi {
 export interface FrameInfo { t: number; starts: number[]; stat: string }
 
 interface Props {
-  algo: AlgoDef;
+  algo: SceneDef;
   playing: boolean;
   apiRef: React.RefObject<SceneApi | null>;
   onFrame: (info: FrameInfo) => void;
@@ -28,7 +28,7 @@ export function IndexScene({ algo, playing, apiRef, onFrame, onLoop }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const live = useRef({ algo, playing, onFrame, onLoop });
   live.current = { algo, playing, onFrame, onLoop };
-  const stage = useRef<{ load(a: AlgoDef): void } | null>(null);
+  const stage = useRef<{ load(a: SceneDef): void } | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -83,8 +83,8 @@ export function IndexScene({ algo, playing, apiRef, onFrame, onLoop }: Props) {
     let tgtTo = new THREE.Vector3();
     let fly = 1;
 
-    let loaded: AlgoDef | null = null;
-    function load(a: AlgoDef) {
+    let loaded: SceneDef | null = null;
+    function load(a: SceneDef) {
       if (a === loaded) return;
       loaded = a;
       if (built) {

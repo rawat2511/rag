@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ALGOS, type AlgoDef, type Rating } from './algorithms';
 import { IndexScene, type FrameInfo, type SceneApi } from './IndexScene';
+import { Spotlight } from './Spotlight';
 import './indexing.css';
 
 const RATING_LABELS: [keyof Rating, string][] = [
@@ -16,16 +17,6 @@ function Pips({ n, tone }: { n: number; tone?: string }) {
       {[1, 2, 3, 4, 5].map((i) => <i key={i} className={i <= n ? 'on' : ''} />)}
     </span>
   );
-}
-
-/** Card with a cursor-following spotlight border. */
-function Spotlight({ className = '', children, ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const onMove = (e: React.PointerEvent<HTMLButtonElement>) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
-    e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`);
-  };
-  return <button type="button" className={`ix-spot ${className}`} onPointerMove={onMove} {...rest}>{children}</button>;
 }
 
 function initialAlgo() {
@@ -105,6 +96,7 @@ export default function IndexingPage() {
         <div className="ix-nav">
           <a href="#/">Pipeline</a>
           <a href="#/indexing" className="on" aria-current="page">Indexing</a>
+          <a href="#/bm25">BM25</a>
         </div>
         <span />
       </nav>
