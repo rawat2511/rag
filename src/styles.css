@@ -304,3 +304,5 @@ mark { padding: 0 2px; border-radius: 3px; background: rgba(255, 171, 61, 0.2); 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+.top-links { display: flex; gap: 8px; }

@@ -359,7 +359,10 @@ export default function App() {
             <li key={label} className={i < stageNow ? 'done' : i === stageNow ? 'active' : ''}>{label}</li>
           ))}
         </ol>
-        {REPO_URL ? <a className="btn ghost" href={REPO_URL} target="_blank" rel="noreferrer">Source ↗</a> : <span />}
+        <div className="top-links">
+          <a className="btn ghost" href="#/indexing">Indexing algorithms</a>
+          {REPO_URL && <a className="btn ghost" href={REPO_URL} target="_blank" rel="noreferrer">Source ↗</a>}
+        </div>
       </nav>
 
       <section className={`stage${doc ? ' has-doc' : ''}`}>
